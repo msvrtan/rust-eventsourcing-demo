@@ -21,6 +21,7 @@ pub struct BankAccountState {
     pub id: BankAccountId,
     pub customer_id: CustomerId,
     pub balance: u64,
+    pub generation: u64,
 }
 
 #[derive(Debug)]
@@ -87,6 +88,7 @@ impl BankAccountAggregate {
             id: e.id,
             customer_id: e.customer_id,
             balance: 0,
+            generation: 1,
         }
     }
 
@@ -95,6 +97,7 @@ impl BankAccountAggregate {
             id: state.id,
             customer_id: state.customer_id,
             balance: state.balance + e.amount,
+            generation: state.generation + 1,
         }
     }
 
@@ -103,6 +106,7 @@ impl BankAccountAggregate {
             id: state.id,
             customer_id: state.customer_id,
             balance: state.balance - e.amount,
+            generation: state.generation + 1,
         }
     }
 }

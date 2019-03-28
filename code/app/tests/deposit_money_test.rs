@@ -25,6 +25,7 @@ fn first_account_credited_event_will_set_state_correctly() {
         id: 100,
         customer_id: 20,
         balance: 49,
+        generation: 2,
     });
 
     // Act
@@ -46,6 +47,7 @@ fn account_credited_event_will_set_state_correctly() {
         id: 100,
         customer_id: 20,
         balance: 98,
+        generation: 3,
     });
 
     // Act

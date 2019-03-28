@@ -21,6 +21,7 @@ fn account_opened_event_will_set_state_correctly() {
         id: 100,
         customer_id: 20,
         balance: 0,
+        generation: 1,
     });
 
     // Act

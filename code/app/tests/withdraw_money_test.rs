@@ -30,6 +30,7 @@ fn account_debited_event_will_set_state_correctly() {
         id: 100,
         customer_id: 20,
         balance: 40,
+        generation: 3,
     });
 
     // Act
