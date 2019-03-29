@@ -9,3 +9,7 @@ chrono = "0.4"
 
 [lib]
 name = "app"
+
+[[bin]]
+name = "zz"
+path = "src/zz.rs"

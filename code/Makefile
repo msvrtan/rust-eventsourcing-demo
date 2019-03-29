@@ -16,7 +16,7 @@ format:
 	time -p cargo fmt
 
 run:
-	time -p cargo run
+	time -p cargo run --bin=zz
 
 test:
 	time -p cargo test --tests
