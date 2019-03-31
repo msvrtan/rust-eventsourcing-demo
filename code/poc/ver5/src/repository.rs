@@ -1,8 +1,8 @@
 use crate::event_store::BankAccountEventStore;
-use crate::event_store::InMemoryBankAccountEventStore;
 use crate::model::BankAccountAggregate;
 use crate::model::BankAccountError;
 use crate::model::BankAccountId;
+use crate::prelude::InMemoryBankAccountEventStore;
 use std::sync::Arc;
 use std::{error::Error, fmt};
 
