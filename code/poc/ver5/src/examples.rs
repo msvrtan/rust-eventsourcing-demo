@@ -34,15 +34,15 @@ fn example_open_bank_account() {
 }
 
 fn example_deposit_money() {
-    let initial_events = vec![BankAccountEvent::acc_opened(100, 20)];
+    let initial_events = vec![BankAccountEvent::acc_opened(201, 20)];
 
     let (repo, event_store) = build_repo(initial_events);
 
     let handler = DepositHandler::new(repo);
 
-    let result = handler.handle(DepositMoney::new(100, 10));
+    let result = handler.handle(DepositMoney::new(201, 10));
 
-    println!("{:?}", &event_store.get_events(100));
+    println!("{:?}", &event_store.get_events(201));
 
     match result {
         Ok(()) => println!("Money deposited"),
@@ -52,16 +52,16 @@ fn example_deposit_money() {
 
 fn example_withdraw_money() {
     let initial_events = vec![
-        BankAccountEvent::acc_opened(100, 20),
-        BankAccountEvent::credited(100, 49),
+        BankAccountEvent::acc_opened(302, 20),
+        BankAccountEvent::credited(302, 49),
     ];
     let (repo, event_store) = build_repo(initial_events);
 
     let handler = WithdrawHandler::new(repo);
 
-    let result = handler.handle(WithdrawMoney::new(100, 40));
+    let result = handler.handle(WithdrawMoney::new(302, 40));
 
-    println!("{:?}", &event_store.get_events(100));
+    println!("{:?}", &event_store.get_events(302));
 
     match result {
         Ok(()) => println!("Money withdrawn"),
@@ -71,16 +71,16 @@ fn example_withdraw_money() {
 
 fn example_withdraw_refused() {
     let initial_events = vec![
-        BankAccountEvent::acc_opened(100, 20),
-        BankAccountEvent::credited(100, 49),
+        BankAccountEvent::acc_opened(403, 20),
+        BankAccountEvent::credited(403, 49),
     ];
     let (repo, event_store) = build_repo(initial_events);
 
     let handler = WithdrawHandler::new(repo);
 
-    let result = handler.handle(WithdrawMoney::new(100, 50));
+    let result = handler.handle(WithdrawMoney::new(403, 50));
 
-    println!("{:?}", &event_store.get_events(100));
+    println!("{:?}", &event_store.get_events(403));
 
     match result {
         Ok(()) => println!("Money withdrawal refused"),
