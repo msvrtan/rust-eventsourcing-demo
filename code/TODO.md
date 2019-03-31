@@ -1,6 +1,7 @@
 
 DONE:
  - create ver5 from ver4
+ - add serde & serde_json
 
 IN PROGRESS:
 
