@@ -1,4 +1,5 @@
 pub mod in_memory;
+pub mod json_file;
 use crate::event::BankAccountEvent;
 use crate::model::BankAccountError;
 use crate::model::BankAccountId;

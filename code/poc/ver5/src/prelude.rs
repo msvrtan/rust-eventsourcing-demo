@@ -2,6 +2,7 @@ pub use crate::command::{DepositMoney, OpenBankAccount, WithdrawMoney};
 pub use crate::deposit::DepositHandler;
 pub use crate::event::BankAccountEvent;
 pub use crate::event_store::in_memory::InMemoryBankAccountEventStore;
+pub use crate::event_store::json_file::JsonFileBankAccountEventStore;
 pub use crate::event_store::{BankAccountEventStore, BankAccountEventStoreError};
 pub use crate::model::{BankAccountAggregate, BankAccountError, BankAccountId, BankAccountState};
 pub use crate::open_bank_account::OpenBankAccountHandler;
