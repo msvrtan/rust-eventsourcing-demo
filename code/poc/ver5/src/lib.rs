@@ -1,3 +1,5 @@
+extern crate serde;
+extern crate serde_json;
 mod command;
 mod deposit;
 mod event;
