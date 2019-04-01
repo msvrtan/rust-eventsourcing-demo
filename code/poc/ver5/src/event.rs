@@ -1,10 +1,11 @@
 use crate::model::{BankAccountId, CustomerId};
 use chrono::prelude::*;
+use serde::{Deserialize, Serialize};
 
 //
 //     Events
 //
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, Serialize, Deserialize)]
 pub enum BankAccountEvent {
     BankAccountOpened(BankAccountOpened),
     Credited(BankAccountCredited),
@@ -23,28 +24,28 @@ impl BankAccountEvent {
     }
 }
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, Serialize, Deserialize)]
 pub struct BankAccountOpened {
     pub id: BankAccountId,
     pub customer_id: CustomerId,
     pub opened_at: DateTime<Utc>,
 }
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, Serialize, Deserialize)]
 pub struct BankAccountCredited {
     pub id: BankAccountId,
     pub amount: u64,
     pub credited_at: DateTime<Utc>,
 }
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, Serialize, Deserialize)]
 pub struct BankAccountDebited {
     pub id: BankAccountId,
     pub amount: u64,
     pub debited_at: DateTime<Utc>,
 }
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, Serialize, Deserialize)]
 pub struct BankAccountWithdrawalRefused {
     pub id: BankAccountId,
     pub amount: u64,
