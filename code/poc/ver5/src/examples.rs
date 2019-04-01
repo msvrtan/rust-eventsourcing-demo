@@ -20,7 +20,7 @@ pub fn examples() {
 }
 
 fn example_open_bank_account() {
-    let (repo, event_store) = build_repo(Vec::new(),"open".to_string());
+    let (repo, event_store) = build_repo(Vec::new(), "open".to_string());
     let handler = OpenBankAccountHandler::new(repo);
 
     let result = handler.handle(OpenBankAccount::new(100, 20));
@@ -36,7 +36,7 @@ fn example_open_bank_account() {
 fn example_deposit_money() {
     let initial_events = vec![BankAccountEvent::acc_opened(201, 20)];
 
-    let (repo, event_store) = build_repo(initial_events,"deposit".to_string());
+    let (repo, event_store) = build_repo(initial_events, "deposit".to_string());
 
     let handler = DepositHandler::new(repo);
 
@@ -55,7 +55,7 @@ fn example_withdraw_money() {
         BankAccountEvent::acc_opened(302, 20),
         BankAccountEvent::credited(302, 49),
     ];
-    let (repo, event_store) = build_repo(initial_events,"withdraw".to_string());
+    let (repo, event_store) = build_repo(initial_events, "withdraw".to_string());
 
     let handler = WithdrawHandler::new(repo);
 
@@ -74,7 +74,7 @@ fn example_withdraw_refused() {
         BankAccountEvent::acc_opened(403, 20),
         BankAccountEvent::credited(403, 49),
     ];
-    let (repo, event_store) = build_repo(initial_events,"withdraw_refused".to_string());
+    let (repo, event_store) = build_repo(initial_events, "withdraw_refused".to_string());
 
     let handler = WithdrawHandler::new(repo);
 
@@ -94,11 +94,11 @@ type BuildRepoResult = (
 );
 
 fn build_repo(initial_events: Vec<BankAccountEvent>, file_name: String) -> BuildRepoResult {
-
-    let path ="/work/noob/rust-eventsourcing-demo/dev/code/poc/ver5/tmp/".to_string();
+    let path = "/work/noob/rust-eventsourcing-demo/dev/code/poc/ver5/tmp/".to_string();
     let file_path = format!("{}{}.json", path, file_name);
 
     let event_store = Arc::new(JsonFileBankAccountEventStore::new(file_path));
+    event_store.purge_all().unwrap();
     let event_store2 = event_store.clone();
     let repo = Arc::new(BankAccountRepository {
         event_store: event_store,

@@ -1,5 +1,6 @@
 pub mod in_memory;
 pub mod json_file;
+
 use crate::event::BankAccountEvent;
 use crate::model::BankAccountError;
 use crate::model::BankAccountId;
@@ -16,6 +17,8 @@ pub trait BankAccountEventStore {
 #[derive(Debug, PartialEq)]
 pub enum BankAccountEventStoreError {
     TestFailed,
+    IoError,
+    SerdeError,
 }
 
 impl Error for BankAccountEventStoreError {}
@@ -29,5 +32,17 @@ impl fmt::Display for BankAccountEventStoreError {
 impl From<BankAccountEventStoreError> for BankAccountError {
     fn from(_err: BankAccountEventStoreError) -> BankAccountError {
         BankAccountError::CantSaveEvent
+    }
+}
+
+impl From<::std::io::Error> for BankAccountEventStoreError {
+    fn from(_err: ::std::io::Error) -> BankAccountEventStoreError {
+        BankAccountEventStoreError::IoError
+    }
+}
+
+impl From<::serde_json::Error> for BankAccountEventStoreError {
+    fn from(_err: ::serde_json::Error) -> BankAccountEventStoreError {
+        BankAccountEventStoreError::SerdeError
     }
 }

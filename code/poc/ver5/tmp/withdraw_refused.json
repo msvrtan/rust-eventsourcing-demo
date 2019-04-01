@@ -1,0 +1,24 @@
+[
+  {
+    "BankAccountOpened": {
+      "id": 403,
+      "customer_id": 20,
+      "opened_at": "2019-04-12T17:27:08Z"
+    }
+  },
+  {
+    "Credited": {
+      "id": 403,
+      "amount": 49,
+      "credited_at": "2019-04-12T17:27:08Z"
+    }
+  },
+  {
+    "WithdrawalRefused": {
+      "id": 403,
+      "amount": 50,
+      "balance": 49,
+      "refused_at": "2019-04-12T17:27:08Z"
+    }
+  }
+]

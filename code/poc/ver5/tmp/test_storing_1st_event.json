@@ -1,0 +1,9 @@
+[
+  {
+    "BankAccountOpened": {
+      "id": 100,
+      "customer_id": 20,
+      "opened_at": "2019-04-19T19:34:41Z"
+    }
+  }
+]

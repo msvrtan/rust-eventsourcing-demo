@@ -1,0 +1,23 @@
+[
+  {
+    "BankAccountOpened": {
+      "id": 302,
+      "customer_id": 20,
+      "opened_at": "2019-04-12T17:27:08Z"
+    }
+  },
+  {
+    "Credited": {
+      "id": 302,
+      "amount": 49,
+      "credited_at": "2019-04-12T17:27:08Z"
+    }
+  },
+  {
+    "Debited": {
+      "id": 302,
+      "amount": 40,
+      "debited_at": "2019-04-12T17:27:08Z"
+    }
+  }
+]
