@@ -48,6 +48,7 @@ dependencies = [
  "ver2 0.1.0",
  "ver3 0.1.0",
  "ver4 0.1.0",
+ "ver5 0.1.0",
 ]
 
 [[package]]

@@ -17,12 +17,14 @@ format:
 
 run:
 	#time -p cargo run
-	time -p cargo run --bin example-banking
+	#time -p cargo run --bin example-banking
+	time -p cargo run --bin app
 
 test:
 	#time -p cargo test --tests
-	cd eventsourcing/ && time -p cargo test --tests
-	cd example-banking/ && time -p cargo test --tests
+	#cd eventsourcing/ && time -p cargo test --tests
+	#cd example-banking/ && time -p cargo test --tests
+	cd poc/ver5/ && time -p cargo test --tests
 
 wip:
 	git add . && git commit -am 'wip' && make build
