@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+    "app",
+    "bankaccount_core",
+    "bankaccount_app",
+    "bankaccount_infra",
+    "eventsourcing"
+]
