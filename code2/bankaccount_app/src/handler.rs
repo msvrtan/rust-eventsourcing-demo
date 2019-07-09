@@ -1,7 +1,11 @@
 use crate::command::{Deposit, OpenBankAccount, Withdraw};
 use crate::error::BankAccountAppError;
 use crate::repository::BankAccountRepository;
+use bankaccount_core::event::DomainMessage;
 use bankaccount_core::model::BankAccountAggregate;
+use bankaccount_core::BankAccountId;
+use std::cell::{Cell, RefCell};
+use std::sync::{Arc, RwLock};
 
 type HandlerResult = Result<(), BankAccountAppError>;
 
@@ -37,24 +41,34 @@ impl OpenBankAccountHandler {
 //
 //
 
+#[derive(Debug)]
 struct DepositHandler {
-    repository: BankAccountRepository,
+    repository: Arc<RwLock<BankAccountRepository>>,
 }
 
 impl DepositHandler {
     fn new(repository: BankAccountRepository) -> Self {
         Self {
-            repository: repository,
+            repository: Arc::new(RwLock::new(repository)),
         }
     }
-    fn handle(self, command: Deposit) -> HandlerResult {
-        let mut agg = self.repository.load(command.id)?;
+    fn handle(&mut self, command: Deposit) -> HandlerResult {
+        let mut agg = self.load(command.id)?;
 
         agg.deposit(command.amount);
 
         let events = agg.get_new_events();
 
-        self.repository.save(events.to_vec());
+        self.save(events.to_vec());
+
+        Ok(())
+    }
+
+    fn load(&mut self, id: BankAccountId) -> Result<BankAccountAggregate, BankAccountAppError> {
+        self.repository.read().unwrap().load(id)
+    }
+    fn save(&mut self, events: Vec<DomainMessage>) -> Result<(), BankAccountAppError> {
+        self.repository.write().unwrap().save(events.to_vec());
 
         Ok(())
     }
@@ -79,6 +93,7 @@ impl WithdrawHandler {
         Self { repository }
     }
     fn handle(self, command: Withdraw) -> HandlerResult {
+        /*
         let mut agg = self.repository.load(command.id)?;
 
         agg.withdraw(command.amount);
@@ -86,6 +101,7 @@ impl WithdrawHandler {
         let events = agg.get_new_events();
 
         self.repository.save(events.to_vec());
+        */
 
         Ok(())
     }
@@ -106,7 +122,7 @@ mod tests {
     use crate::command::{Deposit, OpenBankAccount, Withdraw};
     use crate::error::BankAccountAppError;
     use crate::handler::{DepositHandler, OpenBankAccountHandler, WithdrawHandler};
-    use crate::repository::BankAccountRepository;
+    use crate::repository::{BankAccountRepository, InMemoryEventStore};
     use bankaccount_core::{BankAccountId, CustomerId};
 
     type TestResult = Result<(), BankAccountAppError>;
@@ -116,7 +132,8 @@ mod tests {
 
     #[test]
     fn open_bank_account() -> TestResult {
-        let repository = BankAccountRepository {};
+        let event_store = InMemoryEventStore::new();
+        let repository = BankAccountRepository::new(event_store);
         let handler = OpenBankAccountHandler::new(repository);
         let cmd = OpenBankAccount::new(ACCOUNT_ID, CUSTOMER_ID);
 
@@ -126,8 +143,9 @@ mod tests {
 
     #[test]
     fn deposit_money() -> TestResult {
-        let repository = BankAccountRepository {};
-        let handler = DepositHandler::new(repository);
+        let event_store = InMemoryEventStore::new();
+        let repository = BankAccountRepository::new(event_store);
+        let mut handler = DepositHandler::new(repository);
         let cmd = Deposit::new(ACCOUNT_ID, CUSTOMER_ID);
 
         assert_eq!(Ok(()), handler.handle(cmd));
@@ -136,7 +154,8 @@ mod tests {
 
     #[test]
     fn withdraw_money() -> TestResult {
-        let repository = BankAccountRepository {};
+        let event_store = InMemoryEventStore::new();
+        let repository = BankAccountRepository::new(event_store);
         let handler = WithdrawHandler::new(repository);
         let cmd = Withdraw::new(ACCOUNT_ID, CUSTOMER_ID);
 
@@ -146,7 +165,8 @@ mod tests {
 
     #[test]
     fn withdrawing_money_refused() -> TestResult {
-        let repository = BankAccountRepository {};
+        let event_store = InMemoryEventStore::new();
+        let repository = BankAccountRepository::new(event_store);
         let handler = WithdrawHandler::new(repository);
         let cmd = Withdraw::new(ACCOUNT_ID, CUSTOMER_ID);
 
