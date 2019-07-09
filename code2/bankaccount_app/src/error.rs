@@ -16,7 +16,7 @@ impl fmt::Display for BankAccountAppError {
     }
 }
 impl From<BankAccountError> for BankAccountAppError {
-    fn from(error: BankAccountError) -> Self {
+    fn from(_error: BankAccountError) -> Self {
         BankAccountAppError::DomainError
     }
 }

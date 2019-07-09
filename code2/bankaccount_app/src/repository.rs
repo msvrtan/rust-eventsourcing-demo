@@ -1,14 +1,17 @@
 use crate::error::BankAccountAppError;
 use bankaccount_core::event::DomainMessage;
+use bankaccount_core::model::BankAccountAggregate;
+use bankaccount_core::BankAccountId;
 
-pub trait BankAccountRepository {
-    fn save(self, messages: Vec<DomainMessage>) -> Result<(), BankAccountAppError>;
-}
+#[derive(Debug, PartialEq, Copy, Clone)]
+pub struct BankAccountRepository {}
 
-pub struct InMemoryBankAccountRepository {}
+impl BankAccountRepository {
+    pub fn save(self, _messages: Vec<DomainMessage>) -> Result<(), BankAccountAppError> {
+        Err(BankAccountAppError::RepositoryError)
+    }
 
-impl BankAccountRepository for InMemoryBankAccountRepository {
-    fn save(self, messages: Vec<DomainMessage>) -> Result<(), BankAccountAppError> {
-        unimplemented!()
+    pub fn load(self, _id: BankAccountId) -> Result<BankAccountAggregate, BankAccountAppError> {
+        Err(BankAccountAppError::RepositoryError)
     }
 }

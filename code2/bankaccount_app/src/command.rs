@@ -24,7 +24,7 @@ impl OpenBankAccount {
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Deposit {
-    id: BankAccountId,
+    pub id: BankAccountId,
     pub amount: u64,
 }
 
@@ -45,7 +45,7 @@ impl Deposit {
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Withdraw {
-    id: BankAccountId,
+    pub id: BankAccountId,
     pub amount: u64,
 }
 

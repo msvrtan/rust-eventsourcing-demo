@@ -3,12 +3,18 @@ use crate::error::BankAccountAppError;
 use crate::repository::BankAccountRepository;
 use bankaccount_core::model::BankAccountAggregate;
 
+type HandlerResult = Result<(), BankAccountAppError>;
+
 struct OpenBankAccountHandler {
-    repository: Box<dyn BankAccountRepository>,
+    repository: BankAccountRepository,
 }
 
 impl OpenBankAccountHandler {
-    fn handle(self, command: OpenBankAccount) -> Result<(), BankAccountAppError> {
+    fn new(repository: BankAccountRepository) -> Self {
+        Self { repository }
+    }
+
+    fn handle(self, command: OpenBankAccount) -> HandlerResult {
         let mut agg = BankAccountAggregate::new();
 
         agg.open_acc(command.id, command.customer_id)?;
@@ -32,11 +38,24 @@ impl OpenBankAccountHandler {
 //
 
 struct DepositHandler {
-    repository: Box<BankAccountRepository>,
+    repository: BankAccountRepository,
 }
 
 impl DepositHandler {
-    fn handle(self, command: Deposit) -> Result<(), ()> {
+    fn new(repository: BankAccountRepository) -> Self {
+        Self {
+            repository: repository,
+        }
+    }
+    fn handle(self, command: Deposit) -> HandlerResult {
+        let mut agg = self.repository.load(command.id)?;
+
+        agg.deposit(command.amount);
+
+        let events = agg.get_new_events();
+
+        self.repository.save(events.to_vec());
+
         Ok(())
     }
 }
@@ -52,11 +71,22 @@ impl DepositHandler {
 //
 
 struct WithdrawHandler {
-    repository: Box<BankAccountRepository>,
+    repository: BankAccountRepository,
 }
 
 impl WithdrawHandler {
-    fn handle(self, command: Withdraw) -> Result<(), ()> {
+    fn new(repository: BankAccountRepository) -> Self {
+        Self { repository }
+    }
+    fn handle(self, command: Withdraw) -> HandlerResult {
+        let mut agg = self.repository.load(command.id)?;
+
+        agg.withdraw(command.amount);
+
+        let events = agg.get_new_events();
+
+        self.repository.save(events.to_vec());
+
         Ok(())
     }
 }
@@ -73,40 +103,54 @@ impl WithdrawHandler {
 
 #[cfg(test)]
 mod tests {
-    use crate::command::OpenBankAccount;
-    use crate::handler::OpenBankAccountHandler;
-    use crate::repository::InMemoryBankAccountRepository;
+    use crate::command::{Deposit, OpenBankAccount, Withdraw};
+    use crate::error::BankAccountAppError;
+    use crate::handler::{DepositHandler, OpenBankAccountHandler, WithdrawHandler};
+    use crate::repository::BankAccountRepository;
     use bankaccount_core::{BankAccountId, CustomerId};
 
-    type TestResult = Result<(), ()>;
+    type TestResult = Result<(), BankAccountAppError>;
 
     const ACCOUNT_ID: BankAccountId = 123;
     const CUSTOMER_ID: CustomerId = 5000;
 
     #[test]
     fn open_bank_account() -> TestResult {
-        let repository = InMemoryBankAccountRepository {};
-        let handler = OpenBankAccountHandler {
-            repository: Box::new(repository),
-        };
+        let repository = BankAccountRepository {};
+        let handler = OpenBankAccountHandler::new(repository);
         let cmd = OpenBankAccount::new(ACCOUNT_ID, CUSTOMER_ID);
 
-        handler.handle(cmd)
+        assert_eq!(Ok(()), handler.handle(cmd));
+        Ok(())
     }
 
     #[test]
     fn deposit_money() -> TestResult {
+        let repository = BankAccountRepository {};
+        let handler = DepositHandler::new(repository);
+        let cmd = Deposit::new(ACCOUNT_ID, CUSTOMER_ID);
+
+        assert_eq!(Ok(()), handler.handle(cmd));
         Ok(())
     }
 
     #[test]
     fn withdraw_money() -> TestResult {
+        let repository = BankAccountRepository {};
+        let handler = WithdrawHandler::new(repository);
+        let cmd = Withdraw::new(ACCOUNT_ID, CUSTOMER_ID);
+
+        assert_eq!(Ok(()), handler.handle(cmd));
         Ok(())
     }
 
     #[test]
     fn withdrawing_money_refused() -> TestResult {
+        let repository = BankAccountRepository {};
+        let handler = WithdrawHandler::new(repository);
+        let cmd = Withdraw::new(ACCOUNT_ID, CUSTOMER_ID);
+
+        assert_eq!(Ok(()), handler.handle(cmd));
         Ok(())
     }
-
 }
