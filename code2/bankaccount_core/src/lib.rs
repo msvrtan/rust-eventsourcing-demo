@@ -1,7 +1,6 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+mod error;
+mod event;
+mod model;
+
+pub type BankAccountId = u64;
+pub type CustomerId = u64;
